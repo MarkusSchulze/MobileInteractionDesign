@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -8,8 +10,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private Texture dropImage;
@@ -22,6 +27,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private Rectangle bucket;
 	private Vector3 touchPos;
+
+	private Array<Rectangle> raindrops;
+	private long lastDropTime;
 
 	@Override
 	public void create() {
@@ -50,23 +58,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		bucket.width = 64;
 		bucket.height = 64;
 
-		// Vector3 touchPos = new Vector3();
+		raindrops = new Array<Rectangle>();
+		spawnRaindrop();
 	}
 
 	@Override
 	public void render() {
 		// Grundfarbe
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Camera aktualisieren (Sollte jeden Frame gemacht werden)
 		camera.update();
-
-		// Eimer zeichnen
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		batch.draw(bucketImage, bucket.x, bucket.y);
-		batch.end();
 
 		// auf Touch reagieren
 		if (Gdx.input.isTouched()) {
@@ -75,5 +78,43 @@ public class MyGdxGame extends ApplicationAdapter {
 			camera.unproject(touchPos);
 			bucket.x = touchPos.x - 64 / 2;
 		}
+
+		// nach fester Zeit neuen Tropfen spawnen
+		if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+			spawnRaindrop();
+
+		// Tropfen bewegen
+		Iterator<Rectangle> iter = raindrops.iterator();
+		while (iter.hasNext()) {
+			Rectangle raindrop = iter.next();
+			if (raindrop.overlaps(bucket)) {
+				dropSound.play();
+				iter.remove();
+			}
+			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+			if (raindrop.y + 64 < 0)
+				iter.remove();
+		}
+
+		// alles zeichnen mit der batch für openGL
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		batch.draw(bucketImage, bucket.x, bucket.y);
+		batch.draw(dropImage, 100, 100);
+		for (Rectangle raindrop : raindrops) {
+			batch.draw(dropImage, raindrop.x, raindrop.y);
+		}
+		batch.end();
+	}
+
+	// Funktion zum erstellen von random Tropfen in ein Array
+	private void spawnRaindrop() {
+		Rectangle raindrop = new Rectangle();
+		raindrop.x = MathUtils.random(0, 800 - 64);
+		raindrop.y = 480;
+		raindrop.width = 64;
+		raindrop.height = 64;
+		raindrops.add(raindrop);
+		lastDropTime = TimeUtils.nanoTime();
 	}
 }
