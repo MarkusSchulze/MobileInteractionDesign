@@ -26,7 +26,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
 
 	private Rectangle bucket;
-	private Vector3 touchPos;
 
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
@@ -73,12 +72,36 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		// auf Touch reagieren
 		if (Gdx.input.isTouched()) {
+			Vector3 touchPos = new Vector3();
 
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(touchPos);
 			bucket.x = touchPos.x - 64 / 2;
 		}
 
+		float x = Gdx.input.getPitch();
+		float y = Gdx.input.getRoll();
+
+		Vector3 rotation = new Vector3();
+		if (Gdx.input.getRoll() > 0) {
+			rotation.set(bucket.x, bucket.y++, 0);
+			camera.unproject(rotation);
+			bucket.y++;
+		} else {
+			rotation.set(bucket.x, bucket.y--, 0);
+			camera.unproject(rotation);
+			bucket.y--;
+		}
+
+		if (Gdx.input.getPitch() < 0) {
+			rotation.set(bucket.x++, bucket.y, 0);
+			camera.unproject(rotation);
+			bucket.x++;
+		} else {
+			rotation.set(bucket.x--, bucket.y, 0);
+			camera.unproject(rotation);
+			bucket.x--;
+		}
 		// nach fester Zeit neuen Tropfen spawnen
 		if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
 			spawnRaindrop();
@@ -100,7 +123,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(bucketImage, bucket.x, bucket.y);
-		batch.draw(dropImage, 100, 100);
 		for (Rectangle raindrop : raindrops) {
 			batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
@@ -117,4 +139,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		raindrops.add(raindrop);
 		lastDropTime = TimeUtils.nanoTime();
 	}
+
+	@Override
+	public void dispose() {
+		dropImage.dispose();
+		bucketImage.dispose();
+		dropSound.dispose();
+		rainMusic.dispose();
+		batch.dispose();
+	}
+
 }
