@@ -6,13 +6,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -49,11 +47,12 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create() {
 		Vector3 sphereCenter;
-		TextureAtlas textureAtlas = new TextureAtlas("data/main");
-		font = new BitmapFont(Gdx.files.internal("data/calibri.fnt"), textureAtlas.findRegion("calibri"), false);
+		// TextureAtlas textureAtlas = new TextureAtlas("data/main");
+		// font = new BitmapFont(Gdx.files.internal("data/calibri.fnt"),
+		// textureAtlas.findRegion("calibri"), false);
 		// font = new BitmapFont();
-		font.setColor(Color.RED);
-		font.scale(20);
+		// font.setColor(Color.RED);
+		// font.scale(20);
 		numberOfLetters = 5;
 
 		// load the images for the droplet and the bucket, 64x64 pixels each
@@ -227,7 +226,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		for (Sphere raindrop : raindrops) {
 			batch.draw(dropImage, raindrop.center.x - raindrop.radius, raindrop.center.y - raindrop.radius);
 		}
-		font.draw(batch, "C", 200, 200);
+		// font.draw(batch, "C", 200, 200);
 		batch.end();
 	}
 
