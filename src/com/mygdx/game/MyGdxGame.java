@@ -6,11 +6,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -26,6 +28,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Music rainMusic;
 	private int numberOfLetters;
 	private String wordToSpell;
+	private BitmapFont font;
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -35,7 +38,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Sphere circleCollision;
 	private Vector3 rotation;
 	private Vector3 touchPos;
-	private Vector3 sphere;
 	Sphere spawningOuterSphere;
 	Sphere spawningInterSphere;
 
@@ -47,7 +49,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create() {
 		Vector3 sphereCenter;
-		BitmapFont font = new BitmapFont();
+		TextureAtlas textureAtlas = new TextureAtlas("data/main");
+		font = new BitmapFont(Gdx.files.internal("data/calibri.fnt"), textureAtlas.findRegion("calibri"), false);
+		// font = new BitmapFont();
+		font.setColor(Color.RED);
+		font.scale(20);
 		numberOfLetters = 5;
 
 		// load the images for the droplet and the bucket, 64x64 pixels each
@@ -67,14 +73,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		System.out.println("Höhe: " + Gdx.graphics.getHeight());
 		System.out.println("Breite: " + Gdx.graphics.getWidth());
-		camera.setToOrtho(false, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
 
 		// Rechteck um den Eimer. Wird in der Mitte vom Screen erstellt mit 20
 		// Pixeln überhalb vom Boden
-		bucket = new Sphere(new Vector3(Gdx.graphics.getWidth() / 2 - 64 / 2,
-				Gdx.graphics.getHeight() / 2 - 64, 0), 32);
+		bucket = new Sphere(new Vector3(Gdx.graphics.getWidth() / 2 - 64 / 2, Gdx.graphics.getHeight() / 2 - 64, 0), 32);
 		/*
 		 * bucket.x = Gdx.graphics.getWidth() / 2 - 64 / 2; bucket.y = 20;
 		 * bucket.width = 64; bucket.height = 64;
@@ -82,12 +86,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		// Kreis auf dem die Kugel ballanciert wird. Es gibt einen Kreis der
 		// angezeigt wird und einen weiteren der bestimmt, wann die Kugel
 		// "runterfällt"
-		sphereCenter = new Vector3(Gdx.graphics.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2, 0);
+		sphereCenter = new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
 		circleCollision = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2);
-		circle = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2
-				- bucket.radius);
+		circle = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius);
 
 		raindrops = new Array<Sphere>();
 		spawnRaindrop();
@@ -96,34 +98,21 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	// Funktion zum erstellen von random Tropfen in ein Array
 	private void spawnRaindrop() {
-		Vector3 spawn;
 		Vector3 sphereCenter;
-		// Sphere spawningOuterSphere;
-		// Sphere spawningInterSphere;
-		float distanceFromCenterToSpawnHorizontal = 0;
-		float distanceFromCenterToSpawnVertical = 0;
 		float x = 0;
 		float y = 0;
 		boolean collision = false;
 
-		sphereCenter = new Vector3(Gdx.graphics.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2, 0);
+		sphereCenter = new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
-		spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight()
-				/ 2 - bucket.radius - 2 * 32);
+		spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius - 2 * 32);
 		spawningInterSphere = new Sphere(sphereCenter, 2 * bucket.radius + 32);
 
 		Iterator<Sphere> iter;
 		for (int i = 0; i < numberOfLetters; i++) {
-			x = MathUtils.random(
-					Gdx.graphics.getWidth() / 2
-							- (Gdx.graphics.getHeight() / 2 - bucket.radius)
-							+ 32,
-					Gdx.graphics.getWidth() / 2
-							+ (Gdx.graphics.getHeight() / 2 - bucket.radius)
-							- 32);
-			y = MathUtils.random(bucket.radius, Gdx.graphics.getHeight()
-					- bucket.radius);
+			x = MathUtils.random(Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getHeight() / 2 - bucket.radius) + 32,
+					Gdx.graphics.getWidth() / 2 + (Gdx.graphics.getHeight() / 2 - bucket.radius) - 32);
+			y = MathUtils.random(bucket.radius, Gdx.graphics.getHeight() - bucket.radius);
 			Sphere raindrop = new Sphere(new Vector3(x, y, 0), 52);
 
 			collision = false;
@@ -134,9 +123,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					collision = true;
 				}
 			}
-			if (raindrop.overlaps(spawningOuterSphere)
-					&& !raindrop.overlaps(spawningInterSphere)
-					&& collision == false) {
+			if (raindrop.overlaps(spawningOuterSphere) && !raindrop.overlaps(spawningInterSphere) && collision == false) {
 				raindrop.radius = 32;
 				raindrops.add(raindrop);
 			} else {
@@ -236,12 +223,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		// alles zeichnen mit der batch für openGL
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(bucketImage, bucket.center.x - bucket.radius,
-				bucket.center.y - bucket.radius);
+		batch.draw(bucketImage, bucket.center.x - bucket.radius, bucket.center.y - bucket.radius);
 		for (Sphere raindrop : raindrops) {
-			batch.draw(dropImage, raindrop.center.x - raindrop.radius,
-					raindrop.center.y - raindrop.radius);
+			batch.draw(dropImage, raindrop.center.x - raindrop.radius, raindrop.center.y - raindrop.radius);
 		}
+		font.draw(batch, "C", 200, 200);
 		batch.end();
 	}
 
