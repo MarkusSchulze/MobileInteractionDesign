@@ -50,7 +50,7 @@ public class MainScreen implements Screen {
 		imgC1.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new SpellingGame());
+				game.setScreen(new GameScreen(game));
 			}
 		});
 
