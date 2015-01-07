@@ -87,9 +87,8 @@ public class PictureScreen extends ScreenAdapter {
 		choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
 
 		choosenWord = "CAT";
-		choosenWord += ".jpg";
 
-		Texture choosenTexture = new Texture(Gdx.files.internal("pictures/" + choosenWord));
+		Texture choosenTexture = new Texture(Gdx.files.internal("pictures/" + choosenWord + ".jpg"));
 		choosenPicture = new Image(choosenTexture);
 		choosenPicture.setPosition(0, 0);
 		choosenPicture.setHeight(Gdx.graphics.getHeight());

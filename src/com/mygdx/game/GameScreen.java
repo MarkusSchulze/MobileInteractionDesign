@@ -16,14 +16,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Sphere;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen extends ScreenAdapter {
 	private Game game;
-	private TextField letter;
+	// private TextField letter;
+	private Label letterCounter;
 	private int numberOfLetters;
+	private String theWORD;
 	private Texture dropImage;
 	private Texture bucketImage;
 	private Sound dropSound;
@@ -32,25 +35,34 @@ public class GameScreen extends ScreenAdapter {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private ShapeRenderer shaperenderer;
+	private Stage stage;
 
 	private Sphere bucket;
 	private Sphere circle;
 	private Sphere circleCollision;
 	private Vector3 rotation;
 	// private Vector3 touchPos;
-	Sphere spawningOuterSphere;
-	Sphere spawningInterSphere;
-	private Array<Sphere> raindrops;
+	// private Array<Sphere> raindrops;
+	private Array<Letter> letters;
 
 	public GameScreen(Game g, String choosenWord) {
+		theWORD = choosenWord;
 		game = g;
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		shaperenderer = new ShapeRenderer();
+
 		Vector3 sphereCenter;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		letter = new TextField("test", skin);
-		letter.setPosition(100, 100);
+		// letter = new TextField("test", skin);
+		// letter.setPosition(100, 100);
+		letterCounter = new Label("", skin);
+		letterCounter.setPosition(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 8);
+		letterCounter.setSize(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 8);
+		letterCounter.setFontScale(3);
 
 		System.out.println(choosenWord);
-		numberOfLetters = choosenWord.length() - 4;
+		numberOfLetters = choosenWord.length();
 
 		// load the images for the droplet and the bucket, 64x64 pixels each
 		dropImage = new Texture(Gdx.files.internal("droplet.png"));
@@ -84,37 +96,50 @@ public class GameScreen extends ScreenAdapter {
 		circleCollision = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2);
 		circle = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius);
 
-		raindrops = new Array<Sphere>();
-		spawnLetters(sphereCenter);
+		spawnLetters(sphereCenter, choosenWord, skin);
 	}
 
 	// Funktion zum erstellen von random Tropfen in ein Array
-	private void spawnLetters(Vector3 sphereCenter) {
+	private void spawnLetters(Vector3 sphereCenter, String choosenWord, Skin skin) {
 		float x = 0;
 		float y = 0;
 		boolean collision = false;
+		stage.addActor(letterCounter);
+		Sphere spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius - 2 * 32);
+		Sphere spawningInterSphere = new Sphere(sphereCenter, 2 * bucket.radius + 32);
+		// raindrops = new Array<Sphere>();
+		letters = new Array<Letter>();
+		Iterator<Letter> iter;
+		choosenWord += "x";
 
-		spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius - 2 * 32);
-		spawningInterSphere = new Sphere(sphereCenter, 2 * bucket.radius + 32);
-
-		Iterator<Sphere> iter;
 		for (int i = 0; i < numberOfLetters; i++) {
+			// bestimme die Position zufällig
 			x = MathUtils.random(Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getHeight() / 2 - bucket.radius) + 32,
 					Gdx.graphics.getWidth() / 2 + (Gdx.graphics.getHeight() / 2 - bucket.radius) - 32);
 			y = MathUtils.random(bucket.radius, Gdx.graphics.getHeight() - bucket.radius);
-			Sphere raindrop = new Sphere(new Vector3(x, y, 0), 52);
+			Sphere newLetter = new Sphere(new Vector3(x, y, 0), 52);
 
+			// prüfe, ob die Position mit den anderen Buchstaben oder dem
+			// inneren oder äußerem Kreis kollidiert
 			collision = false;
-			iter = raindrops.iterator();
+			iter = letters.iterator();
 			while (iter.hasNext()) {
-				Sphere testDummy = iter.next();
-				if (testDummy.overlaps(raindrop)) {
+				Letter testDummy = iter.next();
+				if (testDummy.getSphere().overlaps(newLetter)) {
 					collision = true;
 				}
 			}
-			if (raindrop.overlaps(spawningOuterSphere) && !raindrop.overlaps(spawningInterSphere) && collision == false) {
-				raindrop.radius = 32;
-				raindrops.add(raindrop);
+			if (newLetter.overlaps(spawningOuterSphere) && !newLetter.overlaps(spawningInterSphere) && collision == false) {
+				newLetter.radius = 32;
+				Label newLabel = new Label(choosenWord.substring(0, 1), skin);
+				choosenWord = choosenWord.substring(1, choosenWord.length());
+				newLabel.setPosition(x - newLetter.radius, y - newLetter.radius);
+				newLabel.setSize(newLetter.radius * 2, newLetter.radius * 2);
+				newLabel.setFontScale(3);
+
+				Letter insertLetter = new Letter(newLetter, newLabel);
+				letters.add(insertLetter);
+				stage.addActor(insertLetter.getLabel());
 			} else {
 				i--;
 			}
@@ -122,45 +147,15 @@ public class GameScreen extends ScreenAdapter {
 		}
 	}
 
-	public void render(float delta) {
-		// Grundfarbe
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+	public void update() {
+		stage.act();
 		// Camera aktualisieren (Sollte jeden Frame gemacht werden)
 		camera.update();
 
-		// Renderer für das Board
-		shaperenderer = new ShapeRenderer();
-		shaperenderer.setProjectionMatrix(camera.combined);
-		shaperenderer.begin(ShapeType.Filled);
-		shaperenderer.setColor(0, 1, 0, 1);
-		shaperenderer.circle(circle.center.x, circle.center.y, circle.radius);
-		// //DEBUG
-		// shaperenderer.setColor(0, 1, 1, 1);
-		// shaperenderer.circle(spawningOuterSphere.center.x,
-		// spawningOuterSphere.center.y, spawningOuterSphere.radius);
-		// shaperenderer.setColor(1, 1, 0, 1);
-		// shaperenderer.circle(spawningInterSphere.center.x,
-		// spawningInterSphere.center.y, spawningInterSphere.radius);
-		// shaperenderer.setColor(1, 1, 0, 1);
-		// shaperenderer.circle(bucket.center.x, bucket.center.y,
-		// bucket.radius);
-
-		shaperenderer.end();
-
-		if (!circleCollision.overlaps(bucket))
+		if (!circleCollision.overlaps(bucket)) {
 			System.out.println("fail!!!!");
-
-		// // auf Touch reagieren
-		// if (Gdx.input.isTouched()) {
-		// touchPos = new Vector3();
-		//
-		// touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-		// camera.unproject(touchPos);
-		// bucket.center.x = touchPos.x - 64 / 2;
-		// bucket.center.y = 80;
-		// }
+			game.setScreen(new LostScreen(game));
+		}
 
 		// Bewegungssensor
 		rotation = new Vector3();
@@ -182,17 +177,30 @@ public class GameScreen extends ScreenAdapter {
 			camera.unproject(rotation);
 			bucket.center.x--;
 		}
-		// // nach fester Zeit neuen Tropfen spawnen
+		// // Timer einbauen TODO
 		// if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
 		// spawnRaindrop();
 
 		// Tropfen Kollision
-		Iterator<Sphere> iter = raindrops.iterator();
+		Iterator<Letter> iter = letters.iterator();
 		while (iter.hasNext()) {
-			Sphere raindrop = iter.next();
-			if (raindrop.overlaps(bucket)) {
+			Letter collisionLetter = iter.next();
+			if (collisionLetter.getSphere().overlaps(bucket)) {
 				dropSound.play();
+				collisionLetter.getLabel().setVisible(false);
+				letterCounter.setText(letterCounter.getText().toString() + collisionLetter.getLabel().getText());
 				iter.remove();
+				// wenn das Wort flasch buchstabiert wurde, gehe zum LostScreen
+				System.out.println("+" + letterCounter.getText() + "+");
+				System.out.println("+" + theWORD.substring(0, letterCounter.getText().length) + "+");
+				// TODO Vergleich der Strings funktioniert nicht. Warum auch
+				// immer...
+				if (letterCounter.getText().equals(theWORD.substring(0, letterCounter.getText().length))) {
+					game.setScreen(new LostScreen(game));
+				} else if (letterCounter.getText().length == theWORD.length()) {
+					game.setScreen(new WinScreen(game));
+				}
+
 			}
 			// DEBUG
 			// shaperenderer.setProjectionMatrix(camera.combined);
@@ -202,14 +210,55 @@ public class GameScreen extends ScreenAdapter {
 			// raindrop.radius);
 			// shaperenderer.end();
 		}
+	}
 
-		// alles zeichnen mit der batch für openGL
+	public void draw() {
+		// Grundfarbe
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// Renderer für das Board
+		shaperenderer.setProjectionMatrix(camera.combined);
+		shaperenderer.begin(ShapeType.Filled);
+		shaperenderer.setColor(0, 1, 0, 1);
+		shaperenderer.circle(circle.center.x, circle.center.y, circle.radius);
+		// //DEBUG
+		// shaperenderer.setColor(0, 1, 1, 1);
+		// shaperenderer.circle(spawningOuterSphere.center.x,
+		// spawningOuterSphere.center.y, spawningOuterSphere.radius);
+		// shaperenderer.setColor(1, 1, 0, 1);
+		// shaperenderer.circle(spawningInterSphere.center.x,
+		// spawningInterSphere.center.y, spawningInterSphere.radius);
+		// shaperenderer.setColor(1, 1, 0, 1);
+		// shaperenderer.circle(bucket.center.x, bucket.center.y,
+		// bucket.radius);
+		shaperenderer.end();
+
+		// batch für die Images. könnte wahrscheinlich auch in der stage gemacht
+		// werden, müsste man testen
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(bucketImage, bucket.center.x - bucket.radius, bucket.center.y - bucket.radius);
-		for (Sphere raindrop : raindrops) {
-			batch.draw(dropImage, raindrop.center.x - raindrop.radius, raindrop.center.y - raindrop.radius);
-		}
+		// for (Sphere raindrop : raindrops) {
+		// batch.draw(dropImage, raindrop.center.x - raindrop.radius,
+		// raindrop.center.y - raindrop.radius);
+		// }
 		batch.end();
+		stage.draw();
+	}
+
+	public void render(float delta) {
+		update();
+		draw();
+
+		// // auf Touch reagieren
+		// if (Gdx.input.isTouched()) {
+		// touchPos = new Vector3();
+		//
+		// touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+		// camera.unproject(touchPos);
+		// bucket.center.x = touchPos.x - 64 / 2;
+		// bucket.center.y = 80;
+		// }
 	}
 }
