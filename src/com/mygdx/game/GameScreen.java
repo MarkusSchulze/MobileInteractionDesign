@@ -37,18 +37,20 @@ public class GameScreen extends ScreenAdapter {
 	private Sphere circle;
 	private Sphere circleCollision;
 	private Vector3 rotation;
-	private Vector3 touchPos;
+	// private Vector3 touchPos;
 	Sphere spawningOuterSphere;
 	Sphere spawningInterSphere;
 	private Array<Sphere> raindrops;
 
-	public GameScreen(Game g) {
+	public GameScreen(Game g, String choosenWord) {
 		game = g;
 		Vector3 sphereCenter;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		letter = new TextField("test", skin);
 		letter.setPosition(100, 100);
-		numberOfLetters = 5;
+
+		System.out.println(choosenWord);
+		numberOfLetters = choosenWord.length() - 4;
 
 		// load the images for the droplet and the bucket, 64x64 pixels each
 		dropImage = new Texture(Gdx.files.internal("droplet.png"));
@@ -84,7 +86,6 @@ public class GameScreen extends ScreenAdapter {
 
 		raindrops = new Array<Sphere>();
 		spawnLetters(sphereCenter);
-
 	}
 
 	// Funktion zum erstellen von random Tropfen in ein Array

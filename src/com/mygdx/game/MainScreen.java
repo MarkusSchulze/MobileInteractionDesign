@@ -18,9 +18,6 @@ public class MainScreen implements Screen {
 
 	private Game game;
 	private Stage stage;
-	private Image imgC1;
-	private Image imgC2;
-	private Image imgC3;
 
 	public MainScreen(Game g) {
 		game = g;
@@ -32,9 +29,6 @@ public class MainScreen implements Screen {
 
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		Texture texture = new Texture(Gdx.files.internal("StartScreen.jpg"));
-		Texture countdown1 = new Texture(Gdx.files.internal("countdown1.jpg"));
-		Texture countdown2 = new Texture(Gdx.files.internal("countdown2.jpg"));
-		Texture countdown3 = new Texture(Gdx.files.internal("countdown3.jpg"));
 
 		Image imgBackground = new Image(texture);
 		imgBackground.setPosition(0, 0);
@@ -42,49 +36,13 @@ public class MainScreen implements Screen {
 		imgBackground.setHeight(Gdx.graphics.getHeight());
 		imgBackground.setWidth(Gdx.graphics.getWidth());
 
-		imgC1 = new Image(countdown1);
-		imgC1.setPosition(0, 0);
-		imgC1.setHeight(Gdx.graphics.getHeight());
-		imgC1.setWidth(Gdx.graphics.getWidth());
-		imgC1.setVisible(false);
-		imgC1.addListener(new ClickListener() {
-			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new GameScreen(game));
-			}
-		});
-
-		imgC2 = new Image(countdown2);
-		imgC2.setPosition(0, 0);
-		imgC2.setHeight(Gdx.graphics.getHeight());
-		imgC2.setWidth(Gdx.graphics.getWidth());
-		imgC2.setVisible(false);
-		imgC2.addListener(new ClickListener() {
-			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				imgC1.setVisible(true);
-			}
-		});
-
-		imgC3 = new Image(countdown3);
-		imgC3.setPosition(0, 0);
-		imgC3.setHeight(Gdx.graphics.getHeight());
-		imgC3.setWidth(Gdx.graphics.getWidth());
-		imgC3.setVisible(false);
-		imgC3.addListener(new ClickListener() {
-			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				imgC2.setVisible(true);
-			}
-		});
-
 		TextButton btnStart = new TextButton("Start Game", skin);
 		btnStart.setPosition(ScreenWidth / 5, ScreenHeight / 2);
 		btnStart.setSize(ScreenWidth / 4, ScreenHeight / 10);
 		btnStart.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				imgC3.setVisible(true);
+				game.setScreen(new PictureScreen(game));
 			}
 		});
 
@@ -107,9 +65,6 @@ public class MainScreen implements Screen {
 		stage.addActor(btnScore);
 		stage.addActor(btnOptions);
 		stage.addActor(btnStart);
-		stage.addActor(imgC3);
-		stage.addActor(imgC2);
-		stage.addActor(imgC1);
 	}
 
 	@Override
