@@ -70,7 +70,7 @@ public class GameScreen extends ScreenAdapter {
 
 		// load the drop sound effect and the rain background "music"
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("flip_the_flop.mp3"));
 
 		// start the playback of the background music immediately
 		rainMusic.setLooping(true);
@@ -160,7 +160,7 @@ public class GameScreen extends ScreenAdapter {
 			game.setScreen(new LostScreen(game));
 		}
 
-		// Bewegungssensor
+		// Bewegungssensor TODO kann man noch cooler machen
 		rotation = new Vector3();
 		if (Gdx.input.getRoll() > 0) {
 			rotation.set(bucket.center.x, bucket.center.y++, 0);
@@ -193,14 +193,15 @@ public class GameScreen extends ScreenAdapter {
 				collisionLetter.getLabel().setVisible(false);
 				letterCounter.setText(letterCounter.getText().toString() + collisionLetter.getLabel().getText());
 				iter.remove();
-				// wenn das Wort flasch buchstabiert wurde, gehe zum LostScreen
+				// Vergleiche aktuelles Wort mit dem gesuchten Wort
 				temp1 = letterCounter.getText().toString();
 				temp2 = theWORD.substring(0, letterCounter.getText().length);
-				// TODO Vergleich der Strings funktioniert nicht. Warum auch
-				// immer...
+				// wenn das Wort flasch buchstabiert wurde, gehe zum LostScreen
 				if (temp1.equals(temp2) == false) {
 					rainMusic.stop();
 					game.setScreen(new LostScreen(game));
+					// wenn das Wort gleich lang und nicht falsch ist, dann hat
+					// man gewonnen
 				} else if (letterCounter.getText().length == theWORD.length()) {
 					rainMusic.stop();
 					game.setScreen(new WinScreen(game));
