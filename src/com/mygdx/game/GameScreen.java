@@ -24,12 +24,10 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen extends ScreenAdapter {
 	private Game game;
-	// private TextField letter;
 	private Label letterCounter;
 	private Label timer;
 	private int numberOfLetters;
 	private String theWORD;
-	private Texture dropImage;
 	private Texture bucketImage;
 	private Sound dropSound;
 	private Music rainMusic;
@@ -44,9 +42,18 @@ public class GameScreen extends ScreenAdapter {
 	private Sphere circle;
 	private Sphere circleCollision;
 	private Vector3 rotation;
-	// private Vector3 touchPos;
-	// private Array<Sphere> raindrops;
 	private Array<Letter> letters;
+
+	// Features
+	// TODO Better movement for the Ball
+	// TODO A ball image, NO bucket... maybe with animation
+	// TODO Highscore
+	// TODO Option menu
+	// OPTIONAL
+	// different ball movement for different undergrounds (ice, street, sticky)
+	// Multilanguage
+	// Input for Usernames
+	// Multiple levels with more Letters
 
 	public GameScreen(Game g, String choosenWord) {
 		theWORD = choosenWord;
@@ -74,8 +81,7 @@ public class GameScreen extends ScreenAdapter {
 		System.out.println(choosenWord);
 		numberOfLetters = choosenWord.length();
 
-		// load the images for the droplet and the bucket, 64x64 pixels each
-		dropImage = new Texture(Gdx.files.internal("droplet.png"));
+		// load the images for the bucket, 64x64 pixels
 		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
 		// load the drop sound effect and the rain background "music"
@@ -287,8 +293,8 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public void render(float delta) {
-		draw();
 		update();
+		draw();
 
 		// // auf Touch reagieren
 		// if (Gdx.input.isTouched()) {

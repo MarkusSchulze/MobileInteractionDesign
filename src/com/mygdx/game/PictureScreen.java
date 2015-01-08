@@ -75,7 +75,7 @@ public class PictureScreen extends ScreenAdapter {
 		wordsToSpell.add("KEY");
 		// wordsToSpell.add("KEYBOARD");
 		wordsToSpell.add("MONITOR");
-		wordsToSpell.add("PLAIN");
+		wordsToSpell.add("PLANE");
 		// wordsToSpell.add("SOFA");
 		wordsToSpell.add("WATCH");
 		choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
