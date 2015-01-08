@@ -54,20 +54,18 @@ public class GameScreen extends ScreenAdapter {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		shaperenderer = new ShapeRenderer();
-		Integer intTimer;
 		startTime = TimeUtils.millis();
 
 		Vector3 sphereCenter;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+
 		letterCounter = new Label("", skin);
 		letterCounter.setPosition(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 8);
 		letterCounter.setSize(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 8);
 		letterCounter.setFontScale(3);
 		stage.addActor(letterCounter);
 
-		intTimer = (int) (TimeUtils.timeSinceMillis(startTime) / 1000 + 60);
-		System.out.println(intTimer);
-		timer = new Label(intTimer.toString(), skin);
+		timer = new Label("60", skin);
 		timer.setPosition(Gdx.graphics.getWidth() / 10 * 9, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 8);
 		timer.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 8);
 		timer.setFontScale(3);
@@ -98,7 +96,7 @@ public class GameScreen extends ScreenAdapter {
 
 		// Rechteck um den Eimer. Wird in der Mitte vom Screen erstellt mit 20
 		// Pixeln überhalb vom Boden
-		bucket = new Sphere(new Vector3(Gdx.graphics.getWidth() / 2 - 64 / 2, Gdx.graphics.getHeight() / 2 - 64, 0), 32);
+		bucket = new Sphere(new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0), 32);
 
 		// Kreis auf dem die Kugel ballanciert wird. Es gibt einen Kreis der
 		// angezeigt wird und einen weiteren der bestimmt, wann die Kugel
@@ -115,9 +113,11 @@ public class GameScreen extends ScreenAdapter {
 	private void spawnLetters(Vector3 sphereCenter, String choosenWord, Skin skin) {
 		float x = 0;
 		float y = 0;
+		float sphereRadius = 32;
 		boolean collision = false;
-		Sphere spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius - 2 * 32);
-		Sphere spawningInterSphere = new Sphere(sphereCenter, 2 * bucket.radius + 32);
+		Sphere spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius - 2 * sphereRadius);
+		System.out.println(2 * bucket.radius + sphereRadius);
+		Sphere spawningInterSphere = new Sphere(sphereCenter, 2 * bucket.radius);
 		// raindrops = new Array<Sphere>();
 		letters = new Array<Letter>();
 		Iterator<Letter> iter;
@@ -125,9 +125,18 @@ public class GameScreen extends ScreenAdapter {
 
 		for (int i = 0; i < numberOfLetters; i++) {
 			// bestimme die Position zufällig
-			x = MathUtils.random(Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getHeight() / 2 - bucket.radius) + 32,
-					Gdx.graphics.getWidth() / 2 + (Gdx.graphics.getHeight() / 2 - bucket.radius) - 32);
-			y = MathUtils.random(bucket.radius, Gdx.graphics.getHeight() - bucket.radius);
+			// x goes from
+			// (ScreenWidth / 2) - radius from the plattform + radius from the
+			// character
+			// to (ScreenWidth / 2) + radius from the plattform - radius from
+			// the character
+			x = MathUtils.random(Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getHeight() / 2 - bucket.radius) + sphereRadius, Gdx.graphics.getWidth() / 2
+					+ (Gdx.graphics.getHeight() / 2 - bucket.radius) - sphereRadius);
+			// y goes from
+			// radius from the bucket + radius from the character
+			// to ScreenHeight - radius from the bucket - radius from the
+			// character
+			y = MathUtils.random(bucket.radius + sphereRadius, Gdx.graphics.getHeight() - bucket.radius - sphereRadius);
 			Sphere newLetter = new Sphere(new Vector3(x, y, 0), 52);
 
 			// prüfe, ob die Position mit den anderen Buchstaben oder dem
@@ -141,10 +150,10 @@ public class GameScreen extends ScreenAdapter {
 				}
 			}
 			if (newLetter.overlaps(spawningOuterSphere) && !newLetter.overlaps(spawningInterSphere) && collision == false) {
-				newLetter.radius = 32;
+				newLetter.radius = sphereRadius;
 				Label newLabel = new Label(choosenWord.substring(0, 1), skin);
 				choosenWord = choosenWord.substring(1, choosenWord.length());
-				newLabel.setPosition(x - newLetter.radius, y - newLetter.radius);
+				newLabel.setPosition(x - newLetter.radius / 2, y - newLetter.radius);
 				newLabel.setSize(newLetter.radius * 2, newLetter.radius * 2);
 				newLabel.setFontScale(3);
 
@@ -172,11 +181,11 @@ public class GameScreen extends ScreenAdapter {
 			game.setScreen(new LostScreen(game));
 		}
 
-		// Bewegungssensor TODO kann man noch cooler machen
+		// Bewegungssensor TODO kann man noch cooler machen FOR LI
 		rotation = new Vector3();
-		System.out.println(Gdx.input.getRoll());
 		if (Gdx.input.getRoll() > 0) {
 			rotation.set(bucket.center.x, bucket.center.y++, 0);
+
 			camera.unproject(rotation);
 			bucket.center.y++;
 		} else {
@@ -216,15 +225,7 @@ public class GameScreen extends ScreenAdapter {
 					rainMusic.stop();
 					game.setScreen(new WinScreen(game));
 				}
-
 			}
-			// DEBUG
-			// shaperenderer.setProjectionMatrix(camera.combined);
-			// shaperenderer.begin(ShapeType.Filled);
-			// shaperenderer.setColor(1, 1, 0, 1);
-			// shaperenderer.circle(raindrop.center.x, raindrop.center.y,
-			// raindrop.radius);
-			// shaperenderer.end();
 		}
 
 		// Timer countdown
@@ -244,7 +245,14 @@ public class GameScreen extends ScreenAdapter {
 		shaperenderer.begin(ShapeType.Filled);
 		shaperenderer.setColor(0, 1, 0, 1);
 		shaperenderer.circle(circle.center.x, circle.center.y, circle.radius);
-		// //DEBUG
+		// // DEBUG drawing spheres
+		// Vector3 sphereCenter = new Vector3(Gdx.graphics.getWidth() / 2,
+		// Gdx.graphics.getHeight() / 2, 0);
+		// Sphere spawningOuterSphere = new Sphere(sphereCenter,
+		// Gdx.graphics.getHeight() / 2 - bucket.radius - 2 *
+		// letters.get(0).getSphere().radius);
+		// Sphere spawningInterSphere = new Sphere(sphereCenter, 2 *
+		// bucket.radius);
 		// shaperenderer.setColor(0, 1, 1, 1);
 		// shaperenderer.circle(spawningOuterSphere.center.x,
 		// spawningOuterSphere.center.y, spawningOuterSphere.radius);
@@ -254,6 +262,15 @@ public class GameScreen extends ScreenAdapter {
 		// shaperenderer.setColor(1, 1, 0, 1);
 		// shaperenderer.circle(bucket.center.x, bucket.center.y,
 		// bucket.radius);
+		//
+		// Iterator<Letter> iter = letters.iterator();
+		// while (iter.hasNext()) {
+		// Letter collisionLetter = iter.next();
+		// shaperenderer.setColor(1, 1, 0, 1);
+		// shaperenderer.circle(collisionLetter.getSphere().center.x,
+		// collisionLetter.getSphere().center.y,
+		// collisionLetter.getSphere().radius);
+		// }
 		shaperenderer.end();
 
 		// batch für die Images. könnte wahrscheinlich auch in der stage gemacht
@@ -270,8 +287,8 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public void render(float delta) {
-		update();
 		draw();
+		update();
 
 		// // auf Touch reagieren
 		// if (Gdx.input.isTouched()) {
