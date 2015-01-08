@@ -65,7 +65,7 @@ public class GameScreen extends ScreenAdapter {
 		letterCounter.setFontScale(3);
 		stage.addActor(letterCounter);
 
-		intTimer = (int) (TimeUtils.timeSinceMillis(startTimer) / 1000 + 60);
+		intTimer = (int) (TimeUtils.timeSinceMillis(startTime) / 1000 + 60);
 		System.out.println(intTimer);
 		timer = new Label(intTimer.toString(), skin);
 		timer.setPosition(Gdx.graphics.getWidth() / 10 * 9, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 8);
@@ -164,7 +164,7 @@ public class GameScreen extends ScreenAdapter {
 		stage.act();
 		// Camera aktualisieren (Sollte jeden Frame gemacht werden)
 		camera.update();
-		Integer intTimer;
+		Integer intTimer = (int) TimeUtils.timeSinceMillis(startTime) / 1000 + 60;
 
 		if (!circleCollision.overlaps(bucket)) {
 			System.out.println("fail!!!!");
