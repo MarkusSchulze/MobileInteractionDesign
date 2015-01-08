@@ -20,17 +20,20 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen extends ScreenAdapter {
 	private Game game;
 	// private TextField letter;
 	private Label letterCounter;
+	private Label timer;
 	private int numberOfLetters;
 	private String theWORD;
 	private Texture dropImage;
 	private Texture bucketImage;
 	private Sound dropSound;
 	private Music rainMusic;
+	private long startTime;
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -51,15 +54,24 @@ public class GameScreen extends ScreenAdapter {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		shaperenderer = new ShapeRenderer();
+		Integer intTimer;
+		startTime = TimeUtils.millis();
 
 		Vector3 sphereCenter;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		// letter = new TextField("test", skin);
-		// letter.setPosition(100, 100);
 		letterCounter = new Label("", skin);
 		letterCounter.setPosition(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 8);
 		letterCounter.setSize(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 8);
 		letterCounter.setFontScale(3);
+		stage.addActor(letterCounter);
+
+		intTimer = (int) (TimeUtils.timeSinceMillis(startTimer) / 1000 + 60);
+		System.out.println(intTimer);
+		timer = new Label(intTimer.toString(), skin);
+		timer.setPosition(Gdx.graphics.getWidth() / 10 * 9, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 8);
+		timer.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 8);
+		timer.setFontScale(3);
+		stage.addActor(timer);
 
 		System.out.println(choosenWord);
 		numberOfLetters = choosenWord.length();
@@ -104,7 +116,6 @@ public class GameScreen extends ScreenAdapter {
 		float x = 0;
 		float y = 0;
 		boolean collision = false;
-		stage.addActor(letterCounter);
 		Sphere spawningOuterSphere = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2 - bucket.radius - 2 * 32);
 		Sphere spawningInterSphere = new Sphere(sphereCenter, 2 * bucket.radius + 32);
 		// raindrops = new Array<Sphere>();
@@ -153,6 +164,7 @@ public class GameScreen extends ScreenAdapter {
 		stage.act();
 		// Camera aktualisieren (Sollte jeden Frame gemacht werden)
 		camera.update();
+		Integer intTimer;
 
 		if (!circleCollision.overlaps(bucket)) {
 			System.out.println("fail!!!!");
@@ -180,9 +192,6 @@ public class GameScreen extends ScreenAdapter {
 			camera.unproject(rotation);
 			bucket.center.x--;
 		}
-		// // Timer einbauen TODO
-		// if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
-		// spawnRaindrop();
 
 		// Tropfen Kollision
 		Iterator<Letter> iter = letters.iterator();
@@ -216,6 +225,11 @@ public class GameScreen extends ScreenAdapter {
 			// raindrop.radius);
 			// shaperenderer.end();
 		}
+
+		// Timer countdown
+		intTimer = (int) (TimeUtils.timeSinceMillis(startTime) / 1000 + 60);
+		System.out.println(intTimer);
+		timer.setText(intTimer.toString());
 	}
 
 	public void draw() {
