@@ -164,7 +164,7 @@ public class GameScreen extends ScreenAdapter {
 		stage.act();
 		// Camera aktualisieren (Sollte jeden Frame gemacht werden)
 		camera.update();
-		Integer intTimer = (int) TimeUtils.timeSinceMillis(startTime) / 1000 + 60;
+		Integer intTimer = 60 - (int) TimeUtils.timeSinceMillis(startTime) / 1000;
 
 		if (!circleCollision.overlaps(bucket)) {
 			System.out.println("fail!!!!");
@@ -174,6 +174,7 @@ public class GameScreen extends ScreenAdapter {
 
 		// Bewegungssensor TODO kann man noch cooler machen
 		rotation = new Vector3();
+		System.out.println(Gdx.input.getRoll());
 		if (Gdx.input.getRoll() > 0) {
 			rotation.set(bucket.center.x, bucket.center.y++, 0);
 			camera.unproject(rotation);
@@ -227,9 +228,10 @@ public class GameScreen extends ScreenAdapter {
 		}
 
 		// Timer countdown
-		intTimer = (int) (TimeUtils.timeSinceMillis(startTime) / 1000 + 60);
-		System.out.println(intTimer);
 		timer.setText(intTimer.toString());
+		if (timer.getText().toString().equals("0")) {
+			game.setScreen(new LostScreen(game));
+		}
 	}
 
 	public void draw() {
