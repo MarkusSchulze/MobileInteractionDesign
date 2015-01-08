@@ -73,20 +73,26 @@ public class PictureScreen extends ScreenAdapter {
 
 	public void initPicture() {
 		Array<String> wordsToSpell = new Array<String>();
-		wordsToSpell.add("CAT");
-		wordsToSpell.add("DOG");
+		wordsToSpell.add("BANANA");
+		wordsToSpell.add("BED");
+		wordsToSpell.add("BOAT");
+		wordsToSpell.add("BREAD");
+		wordsToSpell.add("CAMERA");
 		wordsToSpell.add("CAR");
-		wordsToSpell.add("COMPUTER");
-		wordsToSpell.add("RADIO");
-		wordsToSpell.add("MONITOR");
-		wordsToSpell.add("BEER");
-		wordsToSpell.add("TREE");
-		wordsToSpell.add("PRINTER");
-		wordsToSpell.add("KEYBOARD");
+		wordsToSpell.add("CAT");
 		wordsToSpell.add("CHAIR");
+		wordsToSpell.add("DOG");
+		wordsToSpell.add("EARTH");
+		wordsToSpell.add("EGG");
+		wordsToSpell.add("FLOWER");
+		wordsToSpell.add("FORK");
+		wordsToSpell.add("KEY");
+		// wordsToSpell.add("KEYBOARD");
+		wordsToSpell.add("MONITOR");
+		wordsToSpell.add("PLAIN");
+		// wordsToSpell.add("SOFA");
+		wordsToSpell.add("WATCH");
 		choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
-
-		choosenWord = "CAT";
 
 		Texture choosenTexture = new Texture(Gdx.files.internal("pictures/" + choosenWord + ".jpg"));
 		choosenPicture = new Image(choosenTexture);

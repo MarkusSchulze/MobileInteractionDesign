@@ -148,12 +148,15 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public void update() {
+		String temp1;
+		String temp2;
 		stage.act();
 		// Camera aktualisieren (Sollte jeden Frame gemacht werden)
 		camera.update();
 
 		if (!circleCollision.overlaps(bucket)) {
 			System.out.println("fail!!!!");
+			rainMusic.stop();
 			game.setScreen(new LostScreen(game));
 		}
 
@@ -191,13 +194,15 @@ public class GameScreen extends ScreenAdapter {
 				letterCounter.setText(letterCounter.getText().toString() + collisionLetter.getLabel().getText());
 				iter.remove();
 				// wenn das Wort flasch buchstabiert wurde, gehe zum LostScreen
-				System.out.println("+" + letterCounter.getText() + "+");
-				System.out.println("+" + theWORD.substring(0, letterCounter.getText().length) + "+");
+				temp1 = letterCounter.getText().toString();
+				temp2 = theWORD.substring(0, letterCounter.getText().length);
 				// TODO Vergleich der Strings funktioniert nicht. Warum auch
 				// immer...
-				if (letterCounter.getText().equals(theWORD.substring(0, letterCounter.getText().length))) {
+				if (temp1.equals(temp2) == false) {
+					rainMusic.stop();
 					game.setScreen(new LostScreen(game));
 				} else if (letterCounter.getText().length == theWORD.length()) {
+					rainMusic.stop();
 					game.setScreen(new WinScreen(game));
 				}
 
