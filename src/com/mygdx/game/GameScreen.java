@@ -95,18 +95,18 @@ public class GameScreen extends ScreenAdapter {
 		// Camera initiation
 		camera = new OrthographicCamera();
 
-		System.out.println("Höhe: " + Gdx.graphics.getHeight());
+		System.out.println("Hoehe: " + Gdx.graphics.getHeight());
 		System.out.println("Breite: " + Gdx.graphics.getWidth());
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
 
 		// Rechteck um den Eimer. Wird in der Mitte vom Screen erstellt mit 20
-		// Pixeln überhalb vom Boden
+		// Pixeln oberhalb vom Boden
 		bucket = new Sphere(new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0), 32);
 
 		// Kreis auf dem die Kugel ballanciert wird. Es gibt einen Kreis der
 		// angezeigt wird und einen weiteren der bestimmt, wann die Kugel
-		// "runterfällt"
+		// "runterfaellt"
 		sphereCenter = new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
 		circleCollision = new Sphere(sphereCenter, Gdx.graphics.getHeight() / 2);
