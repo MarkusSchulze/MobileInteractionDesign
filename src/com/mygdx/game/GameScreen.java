@@ -82,7 +82,7 @@ public class GameScreen extends ScreenAdapter {
 		numberOfLetters = choosenWord.length();
 
 		// load the images for the bucket, 64x64 pixels
-		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
+		bucketImage = new Texture(Gdx.files.internal("sphere.png"));
 
 		// load the drop sound effect and the rain background "music"
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -130,7 +130,7 @@ public class GameScreen extends ScreenAdapter {
 		choosenWord += "x";
 
 		for (int i = 0; i < numberOfLetters; i++) {
-			// bestimme die Position zufällig
+			// bestimme die Position zufaellig
 			// x goes from
 			// (ScreenWidth / 2) - radius from the plattform + radius from the
 			// character
@@ -189,7 +189,8 @@ public class GameScreen extends ScreenAdapter {
 
 		// Bewegungssensor TODO kann man noch cooler machen FOR LI
 		rotation = new Vector3();
-		if (Gdx.input.getRoll() > 0) {
+		int tolerance = 10; // <- probably needs to be tuned
+		if (Gdx.input.getRoll() > tolerance) {
 			rotation.set(bucket.center.x, bucket.center.y++, 0);
 
 			camera.unproject(rotation);
@@ -246,7 +247,7 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Renderer für das Board
+		// Renderer fuer das Board
 		shaperenderer.setProjectionMatrix(camera.combined);
 		shaperenderer.begin(ShapeType.Filled);
 		shaperenderer.setColor(0, 1, 0, 1);
