@@ -5,12 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 public class SpellingBalancingGame extends Game {
-	public final static String file = ".spellingsalancingsame";
+	public final static String file = ".SpellingGame";
 	public static boolean soundEnabled = true;
 	public final static int[] highscores = new int[] { 100, 80, 50, 30, 10 };
 
+	@SuppressWarnings("unused")
+	public boolean music;
+	public boolean sound;
+
 	@Override
 	public void create() {
+		music = true;
+		sound = false;
 		try {
 			FileHandle filehandle = Gdx.files.external(file);
 

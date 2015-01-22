@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class PictureScreen extends ScreenAdapter {
-	private Game game;
+	private SpellingBalancingGame game;
 	private Image imgC1;
 	private Image imgC2;
 	private Image imgC3;
@@ -24,7 +23,7 @@ public class PictureScreen extends ScreenAdapter {
 	private boolean starter;
 	private long startTime;
 
-	public PictureScreen(Game g) {
+	public PictureScreen(SpellingBalancingGame g) {
 		starter = false;
 		game = g;
 		Texture countdown1 = new Texture(Gdx.files.internal("countdown1.jpg"));

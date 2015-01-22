@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class WinScreen extends ScreenAdapter {
-	private Game game;
+	private SpellingBalancingGame game;
 	private Stage stage;
 	private Image imgWin;
 
-	public WinScreen(Game g) {
+	public WinScreen(SpellingBalancingGame g) {
 		game = g;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);

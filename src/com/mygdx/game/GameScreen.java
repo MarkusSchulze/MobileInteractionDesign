@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
@@ -28,7 +27,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen extends ScreenAdapter {
-	private Game game;
+	private SpellingBalancingGame game;
 	private Label letterCounter;
 	private Label timer;
 	private int numberOfLetters;
@@ -66,7 +65,7 @@ public class GameScreen extends ScreenAdapter {
 	// Input for Usernames
 	// Multiple levels with more Letters
 
-	public GameScreen(Game g, String choosenWord) {
+	public GameScreen(SpellingBalancingGame g, String choosenWord) {
 
 		theWORD = choosenWord;
 		game = g;
@@ -104,7 +103,9 @@ public class GameScreen extends ScreenAdapter {
 
 		// start the playback of the background music immediately
 		rainMusic.setLooping(true);
-		rainMusic.play();
+		if (game.music) {
+			rainMusic.play();
+		}
 
 		// Camera initiation
 		camera = new OrthographicCamera();
@@ -278,7 +279,9 @@ public class GameScreen extends ScreenAdapter {
 		while (iter.hasNext()) {
 			Letter collisionLetter = iter.next();
 			if (collisionLetter.getSphere().overlaps(bucket)) {
-				dropSound.play();
+				if (game.sound) {
+					dropSound.play();
+				}
 				collisionLetter.getLabel().setVisible(false);
 				letterCounter.setText(letterCounter.getText().toString() + collisionLetter.getLabel().getText());
 				iter.remove();
