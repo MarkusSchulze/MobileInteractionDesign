@@ -14,21 +14,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Sphere;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+//box2d
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-//box2d
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-
 
 public class GameScreen extends ScreenAdapter {
 	private Game game;
@@ -52,16 +49,15 @@ public class GameScreen extends ScreenAdapter {
 	private Vector3 rotation;
 	private Array<Letter> letters;
 
+	// box2d
+	private World world;
+	private Body body;
+	private float OriginX;
+	private float OriginY;
 
-    //box2d
-    private World world;
-    private Body body;
-    private float OriginX;
-    private float OriginY;
-
-    // Features
+	// Features
 	// TODO Better movement for the Ball
-	// TODO A ball image, NO bucket... maybe with animation
+	// TODO A ball image, NO bucket... maybe with animation DONE
 	// TODO Highscore
 	// TODO Option menu
 	// OPTIONAL
@@ -78,8 +74,8 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 		shaperenderer = new ShapeRenderer();
 		startTime = TimeUtils.millis();
-        OriginX=Gdx.graphics.getWidth() / 2;
-        OriginY=Gdx.graphics.getHeight() / 2;
+		OriginX = Gdx.graphics.getWidth() / 2;
+		OriginY = Gdx.graphics.getHeight() / 2;
 
 		Vector3 sphereCenter;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -120,30 +116,29 @@ public class GameScreen extends ScreenAdapter {
 
 		// Rechteck um den Eimer. Wird in der Mitte vom Screen erstellt mit 20
 		// Pixeln oberhalb vom Boden
-		bucket = new Sphere(new Vector3(OriginX,OriginY, 0), 32);
+		bucket = new Sphere(new Vector3(OriginX, OriginY, 0), 32);
 
 		// Kreis auf dem die Kugel ballanciert wird. Es gibt einen Kreis der
 		// angezeigt wird und einen weiteren der bestimmt, wann die Kugel
 		// "runterfaellt"
-		sphereCenter = new Vector3(OriginX,OriginY, 0);
+		sphereCenter = new Vector3(OriginX, OriginY, 0);
 
 		circleCollision = new Sphere(sphereCenter, OriginY);
-		circle = new Sphere(sphereCenter,OriginY - bucket.radius);
+		circle = new Sphere(sphereCenter, OriginY - bucket.radius);
 
 		spawnLetters(sphereCenter, choosenWord, skin);
 
+		// box2d
 
-        //box2d
+		world = new World(new Vector2(0, 0), true);
+		BodyDef bdef = new BodyDef();
 
-        world = new World(new Vector2(0, 0), true);
-        BodyDef bdef = new BodyDef();
+		bdef.position.set(OriginX, OriginY);
+		bdef.type = BodyDef.BodyType.DynamicBody;
 
-        bdef.position.set(OriginX, OriginY);
-        bdef.type = BodyDef.BodyType.DynamicBody;
+		body = world.createBody(bdef);
 
-        body = world.createBody(bdef);
-
-    }
+	}
 
 	// Funktion zum erstellen von random Tropfen in ein Array
 	private void spawnLetters(Vector3 sphereCenter, String choosenWord, Skin skin) {
@@ -204,6 +199,7 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public void update() {
+		int surfaceArt = 0;
 		String temp1;
 		String temp2;
 		stage.act();
@@ -216,44 +212,51 @@ public class GameScreen extends ScreenAdapter {
 			rainMusic.stop();
 			game.setScreen(new LostScreen(game));
 		}
-        world.step(Gdx.app.getGraphics().getDeltaTime(), 10, 10);
-        world.clearForces();
 
-        //Schwerkraft ist 9.8 ,aber es ist zu klein in Handy
-        float gravty=30;
-        //Berechnung der Kraft in der X und Y Richtung
-        float forceX=(float)Math.sin((2*Math.PI)*(-Gdx.input.getPitch()/360.0))*gravty;
-        float forceY=(float)Math.sin((2*Math.PI)*(Gdx.input.getRoll()/360.0))*gravty;
-        //geben die Body den Kraft
-        body.applyForceToCenter(forceX,forceY,true);
-        //in Box2d's Welt 1m = 1pixel, deshalb das Objekt immer langsam bewegt. Ich vergrößere zu 10 pixel = 1 m
-        int Rate=10;
-        bucket.center.x=(body.getPosition().x-OriginX)*Rate+OriginX;
-        bucket.center.y=(body.getPosition().y-OriginY)*Rate+OriginY;
-        rotation = new Vector3();
-        rotation.set(bucket.center.x, bucket.center.y, 0);
-        camera.unproject(rotation);
-	/*	int tolerance = 10; // <- probably needs to be tuned
-		if (Gdx.input.getRoll() > tolerance) {
-			rotation.set(bucket.center.x, bucket.center.y++, 0);
+		if (surfaceArt == 0) {
+			world.step(Gdx.app.getGraphics().getDeltaTime(), 10, 10);
+			world.clearForces();
 
+			// Schwerkraft ist 9.8 ,aber es ist zu klein in Handy
+			float gravty = 30;
+			// Berechnung der Kraft in der X und Y Richtung
+			float forceX = (float) Math.sin((2 * Math.PI) * (-Gdx.input.getPitch() / 360.0)) * gravty;
+			float forceY = (float) Math.sin((2 * Math.PI) * (Gdx.input.getRoll() / 360.0)) * gravty;
+			// geben die Body den Kraft
+			body.applyForceToCenter(forceX, forceY, true);
+			// in Box2d's Welt 1m = 1pixel, deshalb das Objekt immer langsam
+			// bewegt. Ich vergrößere zu 10 pixel = 1 m
+			int Rate = 10;
+			bucket.center.x = (body.getPosition().x - OriginX) * Rate + OriginX;
+			bucket.center.y = (body.getPosition().y - OriginY) * Rate + OriginY;
+			rotation = new Vector3();
+			rotation.set(bucket.center.x, bucket.center.y, 0);
 			camera.unproject(rotation);
-			bucket.center.y++;
-		} else {
-			rotation.set(bucket.center.x, bucket.center.y--, 0);
-			camera.unproject(rotation);
-			bucket.center.y--;
+		} else if (surfaceArt == 1) {
+			int tolerance = 10; // <- probably needs to be tuned
+			if (Gdx.input.getRoll() > tolerance) {
+				rotation.set(bucket.center.x, bucket.center.y++, 0);
+
+				camera.unproject(rotation);
+				bucket.center.y++;
+			} else {
+				rotation.set(bucket.center.x, bucket.center.y--, 0);
+				camera.unproject(rotation);
+				bucket.center.y--;
+			}
+			if (Gdx.input.getPitch() < 0) {
+				rotation.set(bucket.center.x++, bucket.center.y, 0);
+				camera.unproject(rotation);
+				bucket.center.x++;
+			} else {
+				rotation.set(bucket.center.x--, bucket.center.y, 0);
+				camera.unproject(rotation);
+				bucket.center.x--;
+			}
+		} else if (surfaceArt == 2) {
+			// like rubber
 		}
-		if (Gdx.input.getPitch() < 0) {
-			rotation.set(bucket.center.x++, bucket.center.y, 0);
-			camera.unproject(rotation);
-			bucket.center.x++;
-		} else {
-			rotation.set(bucket.center.x--, bucket.center.y, 0);
-			camera.unproject(rotation);
-			bucket.center.x--;
-		}
-*/
+
 		// Tropfen Kollision
 		Iterator<Letter> iter = letters.iterator();
 		while (iter.hasNext()) {
@@ -324,7 +327,8 @@ public class GameScreen extends ScreenAdapter {
 		// }
 		shaperenderer.end();
 
-		// batch f�r die Images. k�nnte wahrscheinlich auch in der stage gemacht
+		// batch f�r die Images. k�nnte wahrscheinlich auch in der stage
+		// gemacht
 		// werden, m�sste man testen
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
