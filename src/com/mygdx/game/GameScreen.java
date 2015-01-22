@@ -175,8 +175,8 @@ public class GameScreen extends ScreenAdapter {
 			y = MathUtils.random(bucket.radius + sphereRadius, Gdx.graphics.getHeight() - bucket.radius - sphereRadius);
 			Sphere newLetter = new Sphere(new Vector3(x, y, 0), 52);
 
-			// pr�fe, ob die Position mit den anderen Buchstaben oder dem
-			// inneren oder �u�erem Kreis kollidiert
+			// pruefe, ob die Position mit den anderen Buchstaben oder dem
+			// inneren oder aeusserem Kreis kollidiert
 			collision = false;
 			iter = letters.iterator();
 			while (iter.hasNext()) {
@@ -233,27 +233,6 @@ public class GameScreen extends ScreenAdapter {
         rotation = new Vector3();
         rotation.set(bucket.center.x, bucket.center.y, 0);
         camera.unproject(rotation);
-	/*	int tolerance = 10; // <- probably needs to be tuned
-		if (Gdx.input.getRoll() > tolerance) {
-			rotation.set(bucket.center.x, bucket.center.y++, 0);
-
-			camera.unproject(rotation);
-			bucket.center.y++;
-		} else {
-			rotation.set(bucket.center.x, bucket.center.y--, 0);
-			camera.unproject(rotation);
-			bucket.center.y--;
-		}
-		if (Gdx.input.getPitch() < 0) {
-			rotation.set(bucket.center.x++, bucket.center.y, 0);
-			camera.unproject(rotation);
-			bucket.center.x++;
-		} else {
-			rotation.set(bucket.center.x--, bucket.center.y, 0);
-			camera.unproject(rotation);
-			bucket.center.x--;
-		}
-*/
 		// Tropfen Kollision
 		Iterator<Letter> iter = letters.iterator();
 		while (iter.hasNext()) {
