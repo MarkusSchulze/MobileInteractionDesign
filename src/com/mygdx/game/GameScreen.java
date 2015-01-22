@@ -170,8 +170,8 @@ public class GameScreen extends ScreenAdapter {
 			y = MathUtils.random(bucket.radius + sphereRadius, Gdx.graphics.getHeight() - bucket.radius - sphereRadius);
 			Sphere newLetter = new Sphere(new Vector3(x, y, 0), 52);
 
-			// pr�fe, ob die Position mit den anderen Buchstaben oder dem
-			// inneren oder �u�erem Kreis kollidiert
+			// pruefe, ob die Position mit den anderen Buchstaben oder dem
+			// inneren oder aeusserem Kreis kollidiert
 			collision = false;
 			iter = letters.iterator();
 			while (iter.hasNext()) {
@@ -213,6 +213,7 @@ public class GameScreen extends ScreenAdapter {
 			game.setScreen(new LostScreen(game));
 		}
 
+<<<<<<< HEAD
 		if (surfaceArt == 0) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 10, 10);
 			world.clearForces();
@@ -257,6 +258,22 @@ public class GameScreen extends ScreenAdapter {
 			// like rubber
 		}
 
+=======
+        //Schwerkraft ist 9.8 ,aber es ist zu klein in Handy
+        float gravty=30;
+        //Berechnung der Kraft in der X und Y Richtung
+        float forceX=(float)Math.sin((2*Math.PI)*(-Gdx.input.getPitch()/360.0))*gravty;
+        float forceY=(float)Math.sin((2*Math.PI)*(Gdx.input.getRoll()/360.0))*gravty;
+        //geben die Body den Kraft
+        body.applyForceToCenter(forceX,forceY,true);
+        //in Box2d's Welt 1m = 1pixel, deshalb das Objekt immer langsam bewegt. Ich vergrößere zu 10 pixel = 1 m
+        int Rate=10;
+        bucket.center.x=(body.getPosition().x-OriginX)*Rate+OriginX;
+        bucket.center.y=(body.getPosition().y-OriginY)*Rate+OriginY;
+        rotation = new Vector3();
+        rotation.set(bucket.center.x, bucket.center.y, 0);
+        camera.unproject(rotation);
+>>>>>>> branch 'master' of https://github.com/MarkusSchulze/MobileInteractionDesign
 		// Tropfen Kollision
 		Iterator<Letter> iter = letters.iterator();
 		while (iter.hasNext()) {
