@@ -2,7 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class MainScreen implements Screen {
+public class MainScreen extends ScreenAdapter {
 
 	private Game game;
 	private Stage stage;
@@ -49,6 +49,12 @@ public class MainScreen implements Screen {
 		TextButton btnOptions = new TextButton("Options", skin);
 		btnOptions.setPosition(ScreenWidth / 5, ScreenHeight / 8 * 3);
 		btnOptions.setSize(ScreenWidth / 4, ScreenHeight / 10);
+		btnOptions.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				game.setScreen(new OptionScreen(game));
+			}
+		});
 
 		TextButton btnScore = new TextButton("Score", skin);
 		btnScore.setPosition(ScreenWidth / 5, ScreenHeight / 4);
@@ -75,41 +81,4 @@ public class MainScreen implements Screen {
 		stage.act();
 		stage.draw();
 	}
-
-	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
 }
