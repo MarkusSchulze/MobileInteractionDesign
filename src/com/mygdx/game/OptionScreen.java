@@ -28,6 +28,10 @@ public class OptionScreen extends ScreenAdapter {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+		final Texture On = new Texture(Gdx.files.internal("On.png"));
+		final Texture Off = new Texture(Gdx.files.internal("Off.png"));
+		final Texture On_Off = new Texture(Gdx.files.internal("On_Off.png"));
+		final Texture Off_Off = new Texture(Gdx.files.internal("Off_Off.png"));
 
 		Texture texture = new Texture(Gdx.files.internal("StartScreen.jpg"));
 		Image imgBackground = new Image(texture);
@@ -50,25 +54,32 @@ public class OptionScreen extends ScreenAdapter {
 		sound.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		sound.setFontScale(2);
 
-		Texture On = new Texture(Gdx.files.internal("On.jpg"));
-		imgOn2 = new Image(On);
+		if (game.sound) {
+			imgOn2 = new Image(On);
+			imgOff2 = new Image(Off_Off);
+		} else {
+			imgOn2 = new Image(On_Off);
+			imgOff2 = new Image(Off);
+		}
+		// imgOn2 = new Image(On);
 		imgOn2.setPosition(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 8 * 3);
 		imgOn2.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
 		imgOn2.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new MainScreen(game));
+				imgOn2 = new Image(On);
+				imgOff2 = new Image(Off_Off);
 			}
 		});
 
-		Texture Off = new Texture(Gdx.files.internal("Off.png"));
-		imgOff2 = new Image(Off);
+		// imgOff2 = new Image(Off);
 		imgOff2.setPosition(Gdx.graphics.getWidth() / 100 * 45, Gdx.graphics.getHeight() / 8 * 3);
 		imgOff2.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
 		imgOff2.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new MainScreen(game));
+				imgOn2 = new Image(On_Off);
+				imgOff2 = new Image(Off);
 			}
 		});
 
@@ -77,23 +88,35 @@ public class OptionScreen extends ScreenAdapter {
 		music.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		music.setFontScale(2);
 
-		imgOn1 = new Image(On);
+		if (game.music) {
+			imgOn1 = new Image(On);
+			imgOff1 = new Image(Off_Off);
+		} else {
+			imgOn1 = new Image(On_Off);
+			imgOff1 = new Image(Off);
+		}
+		// imgOn1 = new Image(On);
 		imgOn1.setPosition(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 4);
 		imgOn1.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
 		imgOn1.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new MainScreen(game));
+				imgOn1 = new Image(On);
+				imgOff1 = new Image(Off_Off);
 			}
 		});
 
-		imgOff1 = new Image(Off);
+		// imgOff1 = new Image(Off);
 		imgOff1.setPosition(Gdx.graphics.getWidth() / 100 * 45, Gdx.graphics.getHeight() / 4);
 		imgOff1.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
 		imgOff1.addListener(new ClickListener() {
 			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new MainScreen(game));
+			public void touchUp(InputEvent e, float x, float y, int point, int image) {
+				imgOn1 = new Image(On_Off);
+				imgOff1 = new Image(Off);
+				imgOn1.setVisible(false);
+				// TODO nochmal video angucken
+				System.out.println("bla");
 			}
 		});
 

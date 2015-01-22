@@ -304,6 +304,7 @@ public class GameScreen extends ScreenAdapter {
 		// Timer countdown
 		timer.setText(intTimer.toString());
 		if (timer.getText().toString().equals("0")) {
+			rainMusic.stop();
 			game.setScreen(new LostScreen(game));
 		}
 	}

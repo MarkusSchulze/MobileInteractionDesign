@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -59,14 +58,7 @@ public class MainScreen extends ScreenAdapter {
 		btnScore.setPosition(ScreenWidth / 5, ScreenHeight / 4);
 		btnScore.setSize(ScreenWidth / 4, ScreenHeight / 10);
 
-		TextField txtHeadline = new TextField(" C ", skin);
-		txtHeadline.setPosition(100, 160);
-		txtHeadline.setSize(30, 30);
-		txtHeadline.setScale(50);
-		txtHeadline.setDisabled(true);
-
 		stage.addActor(imgBackground);
-		// stage.addActor(txtHeadline);
 		stage.addActor(btnScore);
 		stage.addActor(btnOptions);
 		stage.addActor(btnStart);

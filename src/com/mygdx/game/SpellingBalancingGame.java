@@ -9,7 +9,7 @@ public class SpellingBalancingGame extends Game {
 	public static boolean soundEnabled = true;
 	public final static int[] highscores = new int[] { 100, 80, 50, 30, 10 };
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings(value = {})
 	public boolean music;
 	public boolean sound;
 
