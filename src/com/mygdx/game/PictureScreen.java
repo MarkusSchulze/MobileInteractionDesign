@@ -69,7 +69,7 @@ public class PictureScreen extends ScreenAdapter {
 		wordsToSpell.add("DOG");
 		wordsToSpell.add("EARTH");
 		wordsToSpell.add("EGG");
-		wordsToSpell.add("FLOWER");
+		// wordsToSpell.add("FLOWER");
 		wordsToSpell.add("FORK");
 		wordsToSpell.add("KEY");
 		// wordsToSpell.add("KEYBOARD");

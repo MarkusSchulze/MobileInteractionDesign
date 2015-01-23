@@ -16,22 +16,38 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class OptionScreen extends ScreenAdapter {
 	private SpellingBalancingGame game;
 	private Stage stage;
-	private Image imgOn1;
-	private Image imgOn2;
-	private Image imgOff1;
-	private Image imgOff2;
+	private Image imgLineOneOn_On;
+	private Image imgLineOneOn_Off;
+	private Image imgLineOneOff_On;
+	private Image imgLineOneOff_Off;
+	private Image imgLineTwoOn_On;
+	private Image imgLineTwoOn_Off;
+	private Image imgLineTwoOff_On;
+	private Image imgLineTwoOff_Off;
+	private Image imgExit;
 	private TextField userName;
 
 	public OptionScreen(SpellingBalancingGame g) {
 		game = g;
+		int lineOne = Gdx.graphics.getHeight() / 2;
+		int lineTwo = Gdx.graphics.getHeight() / 8 * 3;
+		int lineThree = Gdx.graphics.getHeight() / 4;
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		final Texture On = new Texture(Gdx.files.internal("On.png"));
-		final Texture Off = new Texture(Gdx.files.internal("Off.png"));
-		final Texture On_Off = new Texture(Gdx.files.internal("On_Off.png"));
-		final Texture Off_Off = new Texture(Gdx.files.internal("Off_Off.png"));
+		Texture On = new Texture(Gdx.files.internal("On.png"));
+		Texture Off = new Texture(Gdx.files.internal("Off.png"));
+		Texture On_Off = new Texture(Gdx.files.internal("On_Off.png"));
+		Texture Off_Off = new Texture(Gdx.files.internal("Off_Off.png"));
+		imgLineOneOn_On = new Image(On);
+		imgLineOneOn_Off = new Image(On_Off);
+		imgLineOneOff_On = new Image(Off);
+		imgLineOneOff_Off = new Image(Off_Off);
+		imgLineTwoOn_On = new Image(On);
+		imgLineTwoOn_Off = new Image(On_Off);
+		imgLineTwoOff_On = new Image(Off);
+		imgLineTwoOff_Off = new Image(Off_Off);
 
 		Texture texture = new Texture(Gdx.files.internal("StartScreen.jpg"));
 		Image imgBackground = new Image(texture);
@@ -40,93 +56,122 @@ public class OptionScreen extends ScreenAdapter {
 		imgBackground.setHeight(Gdx.graphics.getHeight());
 		imgBackground.setWidth(Gdx.graphics.getWidth());
 
+		Texture exit = new Texture(Gdx.files.internal("Exit.png"));
+		imgExit = new Image(exit);
+		imgExit.setPosition(Gdx.graphics.getWidth() / 4 * 3, Gdx.graphics.getHeight() / 4 * 3);
+		imgExit.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+		imgExit.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				game.setScreen(new MainScreen(game));
+			}
+		});
+
 		Label name = new Label("Name:", skin);
-		name.setPosition(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 2);
+		name.setPosition(Gdx.graphics.getWidth() / 10, lineOne);
 		name.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		name.setFontScale(2);
 
 		userName = new TextField("Player1", skin);
-		userName.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
+		userName.setPosition(Gdx.graphics.getWidth() / 4 + 10, lineOne);
 		userName.setSize(Gdx.graphics.getWidth() / 4 + 10, Gdx.graphics.getHeight() / 10);
 
 		Label sound = new Label("Sound:", skin);
-		sound.setPosition(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 8 * 3);
+		sound.setPosition(Gdx.graphics.getWidth() / 10, lineTwo);
 		sound.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		sound.setFontScale(2);
 
 		if (game.sound) {
-			imgOn2 = new Image(On);
-			imgOff2 = new Image(Off_Off);
+			imgLineOneOff_On.setVisible(false);
 		} else {
-			imgOn2 = new Image(On_Off);
-			imgOff2 = new Image(Off);
+			imgLineOneOn_On.setVisible(false);
 		}
-		// imgOn2 = new Image(On);
-		imgOn2.setPosition(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 8 * 3);
-		imgOn2.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
-		imgOn2.addListener(new ClickListener() {
+		imgLineOneOn_On.setPosition(Gdx.graphics.getWidth() / 10 * 3, lineTwo);
+		imgLineOneOn_On.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+
+		imgLineOneOn_Off.setPosition(Gdx.graphics.getWidth() / 10 * 3, lineTwo);
+		imgLineOneOn_Off.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+		imgLineOneOn_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				imgOn2 = new Image(On);
-				imgOff2 = new Image(Off_Off);
+				game.sound = true;
+				imgLineOneOff_On.setVisible(false);
+				imgLineOneOn_On.setVisible(true);
 			}
 		});
 
-		// imgOff2 = new Image(Off);
-		imgOff2.setPosition(Gdx.graphics.getWidth() / 100 * 45, Gdx.graphics.getHeight() / 8 * 3);
-		imgOff2.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
-		imgOff2.addListener(new ClickListener() {
+		imgLineOneOff_On.setPosition(Gdx.graphics.getWidth() / 100 * 45, lineTwo);
+		imgLineOneOff_On.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+
+		imgLineOneOff_Off.setPosition(Gdx.graphics.getWidth() / 100 * 45, lineTwo);
+		imgLineOneOff_Off.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+		imgLineOneOff_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				imgOn2 = new Image(On_Off);
-				imgOff2 = new Image(Off);
+				game.sound = false;
+				imgLineOneOn_On.setVisible(false);
+				imgLineOneOff_On.setVisible(true);
 			}
 		});
 
 		Label music = new Label("Music:", skin);
-		music.setPosition(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 4);
+		music.setPosition(Gdx.graphics.getWidth() / 10, lineThree);
 		music.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		music.setFontScale(2);
 
 		if (game.music) {
-			imgOn1 = new Image(On);
-			imgOff1 = new Image(Off_Off);
+			imgLineTwoOn_Off.setVisible(false);
+			imgLineTwoOff_On.setVisible(false);
 		} else {
-			imgOn1 = new Image(On_Off);
-			imgOff1 = new Image(Off);
+			imgLineTwoOn_On.setVisible(false);
+			imgLineTwoOff_Off.setVisible(false);
 		}
-		// imgOn1 = new Image(On);
-		imgOn1.setPosition(Gdx.graphics.getWidth() / 10 * 3, Gdx.graphics.getHeight() / 4);
-		imgOn1.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
-		imgOn1.addListener(new ClickListener() {
+		imgLineTwoOn_On.setPosition(Gdx.graphics.getWidth() / 10 * 3, lineThree);
+		imgLineTwoOn_On.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+
+		imgLineTwoOn_Off.setPosition(Gdx.graphics.getWidth() / 10 * 3, lineThree);
+		imgLineTwoOn_Off.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+		imgLineTwoOn_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				imgOn1 = new Image(On);
-				imgOff1 = new Image(Off_Off);
+				game.music = true;
+				imgLineTwoOn_Off.setVisible(false);
+				imgLineTwoOff_On.setVisible(false);
+				imgLineTwoOn_On.setVisible(true);
+				imgLineTwoOff_Off.setVisible(true);
 			}
 		});
 
-		// imgOff1 = new Image(Off);
-		imgOff1.setPosition(Gdx.graphics.getWidth() / 100 * 45, Gdx.graphics.getHeight() / 4);
-		imgOff1.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
-		imgOff1.addListener(new ClickListener() {
+		imgLineTwoOff_On.setPosition(Gdx.graphics.getWidth() / 100 * 45, lineThree);
+		imgLineTwoOff_On.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+
+		imgLineTwoOff_Off.setPosition(Gdx.graphics.getWidth() / 100 * 45, lineThree);
+		imgLineTwoOff_Off.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
+		imgLineTwoOff_Off.addListener(new ClickListener() {
 			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int image) {
-				imgOn1 = new Image(On_Off);
-				imgOff1 = new Image(Off);
-				imgOn1.setVisible(false);
-				// TODO nochmal video angucken
-				System.out.println("bla");
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				game.music = false;
+				imgLineTwoOn_On.setVisible(false);
+				imgLineTwoOff_Off.setVisible(false);
+				imgLineTwoOn_Off.setVisible(true);
+				imgLineTwoOff_On.setVisible(true);
 			}
 		});
 
+		// _off muessen als letztes eingefügt werden, für hohe Priorität beim
+		// zeichnen
 		stage.addActor(imgBackground);
-		stage.addActor(imgOn1);
-		stage.addActor(imgOff1);
+		stage.addActor(imgExit);
+		stage.addActor(imgLineOneOn_Off);
+		stage.addActor(imgLineOneOff_Off);
+		stage.addActor(imgLineOneOn_On);
+		stage.addActor(imgLineOneOff_On);
 		stage.addActor(music);
 		stage.addActor(sound);
-		stage.addActor(imgOn2);
-		stage.addActor(imgOff2);
+		stage.addActor(imgLineTwoOn_Off);
+		stage.addActor(imgLineTwoOff_Off);
+		stage.addActor(imgLineTwoOn_On);
+		stage.addActor(imgLineTwoOff_On);
 		stage.addActor(name);
 		stage.addActor(userName);
 	}
