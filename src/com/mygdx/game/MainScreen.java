@@ -40,7 +40,7 @@ public class MainScreen extends ScreenAdapter {
 		btnStart.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.setScreen(new PictureScreen(game));
+				game.setScreen(new PictureScreen(game, ""));
 			}
 		});
 

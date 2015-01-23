@@ -58,11 +58,13 @@ public class OptionScreen extends ScreenAdapter {
 
 		Texture exit = new Texture(Gdx.files.internal("Exit.png"));
 		imgExit = new Image(exit);
-		imgExit.setPosition(Gdx.graphics.getWidth() / 4 * 3, Gdx.graphics.getHeight() / 4 * 3);
+		imgExit.setPosition(Gdx.graphics.getWidth() / 8 * 7, Gdx.graphics.getHeight() / 8 * 7);
 		imgExit.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
 		imgExit.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				SpellingBalancingGame.playerName = userName.getText();
+				SpellingBalancingGame.save();
 				game.setScreen(new MainScreen(game));
 			}
 		});
@@ -72,7 +74,7 @@ public class OptionScreen extends ScreenAdapter {
 		name.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		name.setFontScale(2);
 
-		userName = new TextField("Player1", skin);
+		userName = new TextField(SpellingBalancingGame.playerName, skin);
 		userName.setPosition(Gdx.graphics.getWidth() / 4 + 10, lineOne);
 		userName.setSize(Gdx.graphics.getWidth() / 4 + 10, Gdx.graphics.getHeight() / 10);
 
@@ -81,7 +83,7 @@ public class OptionScreen extends ScreenAdapter {
 		sound.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		sound.setFontScale(2);
 
-		if (game.sound) {
+		if (SpellingBalancingGame.sound) {
 			imgLineOneOff_On.setVisible(false);
 		} else {
 			imgLineOneOn_On.setVisible(false);
@@ -94,7 +96,7 @@ public class OptionScreen extends ScreenAdapter {
 		imgLineOneOn_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.sound = true;
+				SpellingBalancingGame.sound = true;
 				imgLineOneOff_On.setVisible(false);
 				imgLineOneOn_On.setVisible(true);
 			}
@@ -108,7 +110,7 @@ public class OptionScreen extends ScreenAdapter {
 		imgLineOneOff_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.sound = false;
+				SpellingBalancingGame.sound = false;
 				imgLineOneOn_On.setVisible(false);
 				imgLineOneOff_On.setVisible(true);
 			}
@@ -119,7 +121,7 @@ public class OptionScreen extends ScreenAdapter {
 		music.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
 		music.setFontScale(2);
 
-		if (game.music) {
+		if (SpellingBalancingGame.music) {
 			imgLineTwoOn_Off.setVisible(false);
 			imgLineTwoOff_On.setVisible(false);
 		} else {
@@ -134,7 +136,7 @@ public class OptionScreen extends ScreenAdapter {
 		imgLineTwoOn_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.music = true;
+				SpellingBalancingGame.music = true;
 				imgLineTwoOn_Off.setVisible(false);
 				imgLineTwoOff_On.setVisible(false);
 				imgLineTwoOn_On.setVisible(true);
@@ -150,7 +152,7 @@ public class OptionScreen extends ScreenAdapter {
 		imgLineTwoOff_Off.addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				game.music = false;
+				SpellingBalancingGame.music = false;
 				imgLineTwoOn_On.setVisible(false);
 				imgLineTwoOff_Off.setVisible(false);
 				imgLineTwoOn_Off.setVisible(true);

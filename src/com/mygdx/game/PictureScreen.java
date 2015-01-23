@@ -23,9 +23,10 @@ public class PictureScreen extends ScreenAdapter {
 	private boolean starter;
 	private long startTime;
 
-	public PictureScreen(SpellingBalancingGame g) {
+	public PictureScreen(SpellingBalancingGame g, String lastWord) {
 		starter = false;
 		game = g;
+		choosenWord = lastWord;
 		Texture countdown1 = new Texture(Gdx.files.internal("countdown1.jpg"));
 		Texture countdown2 = new Texture(Gdx.files.internal("countdown2.jpg"));
 		Texture countdown3 = new Texture(Gdx.files.internal("countdown3.jpg"));
@@ -77,7 +78,9 @@ public class PictureScreen extends ScreenAdapter {
 		wordsToSpell.add("PLANE");
 		// wordsToSpell.add("SOFA");
 		wordsToSpell.add("WATCH");
-		choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
+		if (choosenWord.isEmpty()) {
+			choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
+		}
 
 		Texture choosenTexture = new Texture(Gdx.files.internal("pictures/" + choosenWord + ".jpg"));
 		choosenPicture = new Image(choosenTexture);

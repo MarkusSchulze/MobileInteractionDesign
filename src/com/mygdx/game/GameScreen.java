@@ -103,7 +103,7 @@ public class GameScreen extends ScreenAdapter {
 
 		// start the playback of the background music immediately
 		rainMusic.setLooping(true);
-		if (game.music) {
+		if (SpellingBalancingGame.music) {
 			rainMusic.play();
 		}
 
@@ -211,7 +211,7 @@ public class GameScreen extends ScreenAdapter {
 		if (!circleCollision.overlaps(bucket)) {
 			System.out.println("fail!!!!");
 			rainMusic.stop();
-			game.setScreen(new LostScreen(game));
+			game.setScreen(new LostScreen(game, theWORD));
 		}
 
 		if (surfaceArt == 0) {
@@ -279,7 +279,7 @@ public class GameScreen extends ScreenAdapter {
 		while (iter.hasNext()) {
 			Letter collisionLetter = iter.next();
 			if (collisionLetter.getSphere().overlaps(bucket)) {
-				if (game.sound) {
+				if (SpellingBalancingGame.sound) {
 					dropSound.play();
 				}
 				collisionLetter.getLabel().setVisible(false);
@@ -291,7 +291,7 @@ public class GameScreen extends ScreenAdapter {
 				// wenn das Wort flasch buchstabiert wurde, gehe zum LostScreen
 				if (temp1.equals(temp2) == false) {
 					rainMusic.stop();
-					game.setScreen(new LostScreen(game));
+					game.setScreen(new LostScreen(game, theWORD));
 					// wenn das Wort gleich lang und nicht falsch ist, dann hat
 					// man gewonnen
 				} else if (letterCounter.getText().length == theWORD.length()) {
@@ -305,13 +305,13 @@ public class GameScreen extends ScreenAdapter {
 		timer.setText(intTimer.toString());
 		if (timer.getText().toString().equals("0")) {
 			rainMusic.stop();
-			game.setScreen(new LostScreen(game));
+			game.setScreen(new LostScreen(game, theWORD));
 		}
 	}
 
 	public void draw() {
 		// Grundfarbe
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 128, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Renderer fuer das Board
