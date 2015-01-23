@@ -15,6 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by licheng5625 on 15-1-22.
  */
+
 //this is a global data
 public class Data {
     public static ArrayList<User> UsersDatas;
