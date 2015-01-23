@@ -59,7 +59,7 @@ public class MainScreen extends ScreenAdapter {
 		btnScore.setSize(ScreenWidth / 4, ScreenHeight / 10);
 
 		stage.addActor(imgBackground);
-		stage.addActor(btnScore);
+		// stage.addActor(btnScore);
 		stage.addActor(btnOptions);
 		stage.addActor(btnStart);
 	}

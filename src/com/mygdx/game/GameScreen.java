@@ -55,10 +55,7 @@ public class GameScreen extends ScreenAdapter {
 	private float OriginY;
 
 	// Features
-	// TODO Better movement for the Ball
-	// TODO A ball image, NO bucket... maybe with animation DONE
 	// TODO Highscore
-	// TODO Option menu
 	// OPTIONAL
 	// different ball movement for different undergrounds (ice, street, sticky)
 	// Multilanguage
