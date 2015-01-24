@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -59,6 +60,17 @@ public class MainScreen extends ScreenAdapter {
 		TextButton btnScore = new TextButton("Score", skin);
 		btnScore.setPosition(ScreenWidth / 5, ScreenHeight / 4);
 		btnScore.setSize(ScreenWidth / 4, ScreenHeight / 10);
+        btnScore.addListener(new ClickListener() {
+            @Override
+            public void touchUp(InputEvent e, float x, float y, int point, int button) {
+                game.setScreen(new HighscoreScreen(game));
+            }
+        });
+        Label name = new Label(Data.CurrentUser.getName(), skin);
+        name.setPosition(Gdx.graphics.getWidth() *8/ 10, Gdx.graphics.getHeight()*4 / 5);
+        name.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10);
+        name.setFontScale(2);
+
 
 		TextField txtHeadline = new TextField(" C ", skin);
 		txtHeadline.setPosition(100, 160);
@@ -70,6 +82,7 @@ public class MainScreen extends ScreenAdapter {
 		stage.addActor(btnScore);
 		stage.addActor(btnOptions);
 		stage.addActor(btnStart);
+        stage.addActor(name);
 	}
 
 	@Override

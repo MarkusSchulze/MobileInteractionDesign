@@ -1,4 +1,5 @@
 {"Users":
-    [{"Name":"cheng","Wordlist":["banana","appale"]},
-    {"Name":"Makus","Wordlist":["plane"]}]
+    [{"Name":"Ding","Wordlist":["PLANE","BANANA","APPLE"],"Sound":true,"Music":true},
+    {"Name":"Cheng","Wordlist":["BANANA","APPLE"],"Sound":true,"Music":true},
+    {"Name":"Makus","Wordlist":["PLANE"],"Sound":true,"Music":true}]
 }

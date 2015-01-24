@@ -104,7 +104,9 @@ public class GameScreen extends ScreenAdapter {
 
 		// start the playback of the background music immediately
 		rainMusic.setLooping(true);
-		rainMusic.play();
+        if (Data.CurrentUser.getMusik()) {
+            rainMusic.play();
+        }
 
 		// Camera initiation
 		camera = new OrthographicCamera();
@@ -278,8 +280,10 @@ public class GameScreen extends ScreenAdapter {
 		while (iter.hasNext()) {
 			Letter collisionLetter = iter.next();
 			if (collisionLetter.getSphere().overlaps(bucket)) {
-				dropSound.play();
-				collisionLetter.getLabel().setVisible(false);
+                if (Data.CurrentUser.getSound()) {
+                    dropSound.play();
+                }
+                collisionLetter.getLabel().setVisible(false);
 				letterCounter.setText(letterCounter.getText().toString() + collisionLetter.getLabel().getText());
 				iter.remove();
 				// Vergleiche aktuelles Wort mit dem gesuchten Wort
@@ -293,6 +297,8 @@ public class GameScreen extends ScreenAdapter {
 					// man gewonnen
 				} else if (letterCounter.getText().length == theWORD.length()) {
 					rainMusic.stop();
+                    Data.CurrentUser.AddWord(theWORD);
+                    Data.SaveData();
 					game.setScreen(new WinScreen(game));
 				}
 			}
@@ -301,7 +307,8 @@ public class GameScreen extends ScreenAdapter {
 		// Timer countdown
 		timer.setText(intTimer.toString());
 		if (timer.getText().toString().equals("0")) {
-			game.setScreen(new LostScreen(game));
+            rainMusic.stop();
+            game.setScreen(new LostScreen(game));
 		}
 	}
 
@@ -343,9 +350,9 @@ public class GameScreen extends ScreenAdapter {
 		// }
 		shaperenderer.end();
 
-		// batch f�r die Images. k�nnte wahrscheinlich auch in der stage
+		// batch fuer die Images. koennte wahrscheinlich auch in der stage
 		// gemacht
-		// werden, m�sste man testen
+		// werden, muesste man testen
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(bucketImage, bucket.center.x - bucket.radius, bucket.center.y - bucket.radius);
