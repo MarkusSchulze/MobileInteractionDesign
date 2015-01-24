@@ -73,7 +73,7 @@ public class OptionScreen extends ScreenAdapter {
                     Data.addUser(tempuser);
                     Data.CurrentUser=Data.GetUser(userName.getText());
                 }
-
+                Data.SaveData();
                 game.setScreen(new MainScreen(game));
             }
         });
