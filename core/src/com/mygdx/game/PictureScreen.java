@@ -3,12 +3,16 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -58,42 +62,53 @@ public class PictureScreen extends ScreenAdapter {
 	}
 
 	public void initPicture() {
-		Array<String> wordsToSpell = new Array<String>();
-		wordsToSpell.add("BANANA");
-		wordsToSpell.add("BED");
-		wordsToSpell.add("BOAT");
-		wordsToSpell.add("BREAD");
-		wordsToSpell.add("CAMERA");
-		wordsToSpell.add("CAR");
-		// wordsToSpell.add("CAT");
-		wordsToSpell.add("CHAIR");
-		wordsToSpell.add("DOG");
-		wordsToSpell.add("EARTH");
-		wordsToSpell.add("EGG");
-		wordsToSpell.add("FLOWER");
-		wordsToSpell.add("FORK");
-		wordsToSpell.add("KEY");
-		// wordsToSpell.add("KEYBOARD");
-		wordsToSpell.add("MONITOR");
-		wordsToSpell.add("PLANE");
-		// wordsToSpell.add("SOFA");
-		wordsToSpell.add("WATCH");
-		choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
+        Array<String> wordsToSpell = new Array<String>();
+        wordsToSpell.add("BANANA");
+        wordsToSpell.add("BED");
+        wordsToSpell.add("BOAT");
+        wordsToSpell.add("BREAD");
+        wordsToSpell.add("CAMERA");
+        wordsToSpell.add("CAR");
+        // wordsToSpell.add("CAT");
+        wordsToSpell.add("CHAIR");
+        wordsToSpell.add("DOG");
+        wordsToSpell.add("EARTH");
+        wordsToSpell.add("EGG");
+        wordsToSpell.add("FLOWER");
+        wordsToSpell.add("FORK");
+        wordsToSpell.add("KEY");
+        // wordsToSpell.add("KEYBOARD");
+        wordsToSpell.add("MONITOR");
+        wordsToSpell.add("PLANE");
+        // wordsToSpell.add("SOFA");
+        wordsToSpell.add("WATCH");
+        choosenWord = wordsToSpell.get(MathUtils.random(wordsToSpell.size - 1));
 
-		Texture choosenTexture = new Texture(Gdx.files.internal("pictures/" + choosenWord + ".jpg"));
-		choosenPicture = new Image(choosenTexture);
-		choosenPicture.setPosition(0, 0);
-		choosenPicture.setHeight(Gdx.graphics.getHeight());
-		choosenPicture.setWidth(Gdx.graphics.getWidth());
-		choosenPicture.addListener(new ClickListener() {
-			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				starter = true;
-				startTime = TimeUtils.millis();
-			}
-		});
-		stage.addActor(choosenPicture);
-	}
+        Label.LabelStyle wordstyle = new Label.LabelStyle();
+        BitmapFont fot = new BitmapFont(Gdx.files.internal("default.fnt"));
+        wordstyle.font = fot;
+        wordstyle.fontColor = Color.RED;
+        Label wordtext = new Label(choosenWord, wordstyle);
+        wordtext.setPosition(Gdx.graphics.getWidth() / 2-15*choosenWord.length(), Gdx.graphics.getHeight() * (4) / 6);
+        wordtext.setSize(Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 3);
+        wordtext.setFontScale(3);
+
+        Texture choosenTexture = new Texture(Gdx.files.internal("pictures/" + choosenWord + ".jpg"));
+        choosenPicture = new Image(choosenTexture);
+        choosenPicture.setPosition(0, 0);
+        choosenPicture.setHeight(Gdx.graphics.getHeight());
+        choosenPicture.setWidth(Gdx.graphics.getWidth());
+        choosenPicture.addListener(new ClickListener() {
+            @Override
+            public void touchUp(InputEvent e, float x, float y, int point, int button) {
+                starter = true;
+                startTime = TimeUtils.millis();
+            }
+        });
+        stage.addActor(choosenPicture);
+        stage.addActor(wordtext);
+    }
+
 
 	public void render(float delta) {
 		if (starter == true) {
